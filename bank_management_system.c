@@ -200,3 +200,76 @@ void withdraw() {
     printf("Withdrawal successful!\n");
     printf("New Balance : %.2f\n", accounts[idx].balance);
 }
+/* ══════════════════════════════════════════════════════════════
+ *  4. SEARCH ACCOUNT
+ * ══════════════════════════════════════════════════════════════ */
+void searchAccount() {
+    printf("\n--- SEARCH ACCOUNT ---\n");
+
+    int accNo;
+    printf("Account Number : ");
+    scanf("%d", &accNo);
+
+    int idx = findAccount(accNo);
+    if (idx == -1) { printf("Account not found!\n"); return; }
+
+    if (!checkPassword(idx)) return;
+
+    printf("\nAccount Number : %d\n",   accounts[idx].accNo);
+    printf("Name           : %s\n",     accounts[idx].name);
+    printf("Type           : %s\n",     accounts[idx].type);
+    printf("Balance        : %.2f\n",   accounts[idx].balance);
+}
+
+/* ══════════════════════════════════════════════════════════════
+ *  5. DISPLAY ALL ACCOUNTS
+ * ══════════════════════════════════════════════════════════════ */
+void displayAll() {
+    printf("\n--- ALL ACCOUNTS ---\n");
+
+    if (total == 0) { printf("No accounts found!\n"); return; }
+
+    printf("%-10s %-20s %-10s %-12s\n", "Acc No", "Name", "Type", "Balance");
+    printf("%-10s %-20s %-10s %-12s\n", "------", "----", "----", "-------");
+
+    int i;
+    for (i = 0; i < total; i++) {
+        printf("%-10d %-20s %-10s %-12.2f\n",
+               accounts[i].accNo, accounts[i].name,
+               accounts[i].type,  accounts[i].balance);
+    }
+    printf("\nTotal Accounts: %d\n", total);
+}
+
+/* ══════════════════════════════════════════════════════════════
+ *  6. DELETE ACCOUNT
+ * ══════════════════════════════════════════════════════════════ */
+void deleteAccount() {
+    printf("\n--- DELETE ACCOUNT ---\n");
+
+    int accNo;
+    printf("Account Number : ");
+    scanf("%d", &accNo);
+
+    int idx = findAccount(accNo);
+    if (idx == -1) { printf("Account not found!\n"); return; }
+
+    if (!checkPassword(idx)) return;
+
+    printf("Name    : %s\n", accounts[idx].name);
+    printf("Balance : %.2f\n", accounts[idx].balance);
+    printf("Confirm delete? (y/n): ");
+    char ch;
+    scanf(" %c", &ch);
+
+    if (tolower(ch) != 'y') { printf("Deletion cancelled.\n"); return; }
+
+    /* Shift records left to fill the gap */
+    int i;
+    for (i = idx; i < total - 1; i++)
+        accounts[i] = accounts[i + 1];
+
+    total--;
+    saveFile();
+    printf("Account deleted successfully!\n");
+}
