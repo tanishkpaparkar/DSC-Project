@@ -273,3 +273,82 @@ void deleteAccount() {
     saveFile();
     printf("Account deleted successfully!\n");
 }
+/* ══════════════════════════════════════════════════════════════
+ *  7. CHANGE PASSWORD
+ * ══════════════════════════════════════════════════════════════ */
+void changePassword() {
+    printf("\n--- CHANGE PASSWORD ---\n");
+
+    int accNo;
+    printf("Account Number   : ");
+    scanf("%d", &accNo);
+
+    int idx = findAccount(accNo);
+    if (idx == -1) { printf("Account not found!\n"); return; }
+
+    if (!checkPassword(idx)) return;
+
+    char pwd1[20], pwd2[20];
+    do {
+        printf("New Password     : ");
+        scanf("%s", pwd1);
+        printf("Confirm Password : ");
+        scanf("%s", pwd2);
+        if (strcmp(pwd1, pwd2) != 0)
+            printf("Passwords do not match! Try again.\n");
+    } while (strcmp(pwd1, pwd2) != 0);
+
+    strcpy(accounts[idx].password, pwd1);
+    saveFile();
+    printf("Password changed successfully!\n");
+}
+
+/* ══════════════════════════════════════════════════════════════
+ *  MAIN MENU
+ * ══════════════════════════════════════════════════════════════ */
+void showMenu() {
+    printf("\n=============================\n");
+    printf("   BANK MANAGEMENT SYSTEM\n");
+    printf("=============================\n");
+    printf("1. Create Account\n");
+    printf("2. Deposit Money\n");
+    printf("3. Withdraw Money\n");
+    printf("4. Search Account\n");
+    printf("5. Display All Accounts\n");
+    printf("6. Delete Account\n");
+    printf("7. Change Password\n");
+    printf("0. Exit\n");
+    printf("=============================\n");
+    printf("Enter choice: ");
+}
+
+int main() {
+    loadFile();   /* Load saved accounts from file */
+
+    int choice;
+    do {
+        showMenu();
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1: createAccount();  break;
+        case 2: deposit();        break;
+        case 3: withdraw();       break;
+        case 4: searchAccount();  break;
+        case 5: displayAll();     break;
+        case 6: deleteAccount();  break;
+        case 7: changePassword(); break;
+        case 0: printf("Goodbye!\n"); break;
+        default: printf("Invalid choice! Try again.\n");
+        }
+
+        if (choice != 0) {
+            printf("\nPress ENTER to continue...");
+            clearInput();
+            getchar();
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
